@@ -2,10 +2,10 @@ var erittelyt = null
 var erittelySkeleton = `
     <div id={tosite} class="form-group input-group">
         <div class="input-group-prepend">
-            <label class="input-group-text btn btn-outline-secondary"> <span id="{liitePh}"><span class="fa fa-file"></span></span><input type="file" id="{liite}" name="{liite}" hidden/></label>
+            <label class="input-group-text btn btn-outline-secondary"> <span id="{liitePh}"><span class="fa fa-file"></span></span><input type="file" id="{liite}" name="{liite}" class="validate is-invalid" hidden/></label>
         </div>
-        <input class="form-control" placeholder="Kuvaus" id="{kuvaus}" name="{kuvaus}" type="text" />
-        <input class="form-control col-sm-1 text-right" placeholder="€" id="{summa}" name="{summa}" type="text" />
+        <input class="form-control validate" placeholder="Kuvaus" id="{kuvaus}" name="{kuvaus}" type="text" />
+        <input class="form-control col-sm-1 text-right validate" placeholder="€" id="{summa}" name="{summa}" type="text" />
         <div class="input-group-append">
             <button id={poista} class="btn btn-warning btn-outline-secondary" type="button"><span class="fa fa-trash-o"></span></button>
         </div>
@@ -19,6 +19,13 @@ function setValidation(sel, isValid) {
         $(sel).addClass('is-invalid')
         $(sel).removeClass('is-valid')
     }
+
+    var isValid = true
+    $('#form').find('.validate').each(function() {
+        isValid &= $(this).hasClass('is-valid')
+    })
+
+    $('#submit').prop('disabled', !isValid)
 }
 
 function validateIBAN() {
@@ -49,6 +56,7 @@ function AddTositeField() {
         var parts = $("#liite" + id)[0].value.split("\\")
         var fn = parts[parts.length-1]
         $("#liitePh" + id).text(fn)
+        setValidation("#liite" + id, true)
     })
 
     $("#summa" + id).on('input', function() {
@@ -62,21 +70,21 @@ function AddTositeField() {
 
     $("#poista" + id).click(function() {
         $("#" + id).remove()
-
-        if(erittelyt)
     })
 
     // Validations
 
     $("#summa" + id).on('input', function(){
         var s = $("#summa" + id)[0].value.replace(',', '.').replace('€', '')
-        console.log(s);
         setValidation("#summa" + id, s.length != 0 && parseFloat(s))
     })
     $("#kuvaus" + id).on('input', validateNotEmpty("#kuvaus" + id))
 }
 
 function submit() {
+    $.post('/', $("#form").serialize(), function(data, status, xhr){
+        console.log(data);
+    })
 }
 
 $(document).ready(function() {

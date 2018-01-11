@@ -1,21 +1,21 @@
 <div style="padding-left:2em; padding-right:2em;">
-    <form onsubmit="submit" class="form-horizontal">
+    <form id="form" class="form-horizontal">
         <div class="form-group row">
             <label for="nimi" class="control-label col-sm-3">Nimi</label>
             <div class="col-sm-9">
-                <input class="form-control" id="nimi" name="nimi" type="text" />
+                <input class="form-control validate" id="nimi" name="nimi" type="text" />
             </div>
         </div>
         <div class="form-group row">
             <label for="iban" class="control-label col-sm-3">IBAN</label>
             <div class="col-sm-9">
-                <input class="form-control" id="iban" name="iban" type="text" />
+                <input class="form-control validate" id="iban" name="iban" type="text" />
             </div>
         </div>
         <div class="form-group row">
             <label for="peruste" class="control-label col-sm-3">Maksun peruste</label>
             <div class="col-sm-9">
-                <textarea class="form-control" rows="3" id="peruste" name="peruste"></textarea>
+                <textarea class="form-control validate" rows="3" id="peruste" name="peruste"></textarea>
             </div>
         </div>
         <h5>Tositteiden erittely</h5>
@@ -24,7 +24,7 @@
         </div>
         <div class="form-group row">
             <div class="col-sm-3">
-                <button id="add" class="btn" type="button">Lisää erittely</button>
+                <button id="add" class="btn btn-primary" type="button">Lisää erittely</button>
             </div>
             <div class="col-sm-5"></div>
             <div class="col-sm-4 text-center">
@@ -32,7 +32,7 @@
             </div>
         </div>
         <div class="form-group">
-            <button class="btn btn-primary" type="button" id="submit">Lähetä</button>
+            <button class="btn btn-primary" type="button" id="submit" disabled>Lähetä</button>
         </div>
     </form>
 </div>
