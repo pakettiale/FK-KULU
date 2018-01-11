@@ -3,7 +3,7 @@ var erittelyt = null
 var erittelySkeleton = `
     <div class="form-group input-group">
         <div class="input-group-prepend">
-            <label id="{liitePh}" class="input-group-text btn btn-outline-secondary"> Lisää tiedosto <input type="file" id="{liite}" name="{liite}" hidden/></label>
+            <label class="input-group-text btn btn-outline-secondary"> <span id="{liitePh}">Lisää tiedosto</span> <input type="file" id="{liite}" name="{liite}" hidden/></label>
         </div>
         <input class="form-control" placeholder="Kuvaus" name="{kuvaus}" type="text" />
         <input class="form-control col-sm-2 text-right" placeholder="€" id="{summa}" name="{summa}" type="text" />
@@ -40,7 +40,7 @@ function submit() {
 
 $(document).ready(function() {
     erittelyt = $("#erittelyt")
-    
+
     AddTositeField()
 
     $("#add").click(AddTositeField)
