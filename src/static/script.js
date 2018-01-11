@@ -1,21 +1,26 @@
 var numTositteet = 0
 var erittelyt = null
 var erittelySkeleton = `
-    <div class="form-group input-group">
+    <div id={tosite} class="form-group input-group">
         <div class="input-group-prepend">
-            <label class="input-group-text btn btn-outline-secondary"> <span id="{liitePh}">Lisää tiedosto</span> <input type="file" id="{liite}" name="{liite}" hidden/></label>
+            <label class="input-group-text btn btn-outline-secondary"> <span id="{liitePh}"><span class="fa fa-file"></span></span><input type="file" id="{liite}" name="{liite}" hidden/></label>
         </div>
         <input class="form-control" placeholder="Kuvaus" name="{kuvaus}" type="text" />
-        <input class="form-control col-sm-2 text-right" placeholder="€" id="{summa}" name="{summa}" type="text" />
+        <input class="form-control col-sm-1 text-right" placeholder="€" id="{summa}" name="{summa}" type="text" />
+        <div class="input-group-append">
+            <button id={poista} class="btn btn-warning btn-outline-secondary" type="button"><span class="fa fa-trash-o"></span></button>
+        </div>
     </div>`
 
 function AddTositeField() {
     numTositteet += 1
     var elem = $(erittelySkeleton
+        .replace(/{tosite}/g, "tosite" + numTositteet)
         .replace(/{kuvaus}/g, "kuvaus" + numTositteet)
         .replace(/{liite}/g, "liite" + numTositteet)
         .replace(/{liitePh}/g, "liitePh" + numTositteet)
         .replace(/{summa}/g, "summa" + numTositteet)
+        .replace(/{poista}/g, "poista" + numTositteet)
     )
     erittelyt.append(elem)
 
@@ -31,6 +36,11 @@ function AddTositeField() {
             sum += parseFloat($("#summa" + i)[0].value)
         }
         $("#total").text(sum)
+    })
+
+    $("#poista" + numTositteet).click(function() {
+        $("#tosite" + numTositteet).remove()
+        numTositteet -= 1
     })
 }
 
