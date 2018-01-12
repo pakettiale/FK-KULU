@@ -82,9 +82,19 @@ function AddTositeField() {
 }
 
 function submit() {
-    $.post('/', $("#form").serialize(), function(data, status, xhr){
-        console.log(data);
+    $.ajax({
+        type: 'post',
+        url: '/',
+        data: new FormData($("#form")[0]),
+        processData: false,
+        contentType: false,
+        success: function(ret) {
+            alert(ret);
+        }
     })
+    //'/', new FormData($("#form")[0]), function(data, status, xhr){
+    //    console.log(data);
+    //})
 }
 
 $(document).ready(function() {
