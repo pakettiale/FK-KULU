@@ -1,6 +1,6 @@
 var erittelyt = null
 var erittelySkeleton = `
-    <div id={tosite} class="form-group input-group">
+    <div id={tosite} class="form-group input-group tosite">
         <div class="input-group-prepend">
             <label class="input-group-text btn btn-outline-secondary"> <span id="{liitePh}"><span class="fa fa-file"></span></span><input type="file" id="{liite}" name="{liite}" class="validate is-invalid" hidden/></label>
         </div>
@@ -82,19 +82,22 @@ function AddTositeField() {
 }
 
 function submit() {
+    var formData = new FormData($("#form")[0])
+
+    var ids = []
+    $('.tosite').each(function() { ids.push($(this)[0].id) })
+    formData.append('ids', ids)
+
     $.ajax({
         type: 'post',
         url: '/',
-        data: new FormData($("#form")[0]),
+        data: formData,
         processData: false,
         contentType: false,
         success: function(ret) {
-            alert(ret);
+            alert(ret); //TODO
         }
     })
-    //'/', new FormData($("#form")[0]), function(data, status, xhr){
-    //    console.log(data);
-    //})
 }
 
 $(document).ready(function() {
