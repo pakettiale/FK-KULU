@@ -44,7 +44,7 @@ def receive():
         summa = "summa" + id
 
         if (not kuvaus in request.form) or (not summa in request.form) or (not liite in request.files):
-            return ['Kaikkia tietoja ei löytynyt kaikille liitteille.'], 405
+            return ['Liiteistä puuttuu tietoja.'], 405
 
         bill['tositteet'].append({
                 'kuvaus': request.form[kuvaus],
@@ -52,7 +52,10 @@ def receive():
                 'summa': request.form[summa]
             })
 
-    latexify(**bill)
+    ret = latexify(**bill)
+
+    if not ret:
+        return ['Kääntäminen epäonnistui.'], 405
 
     return 'Success', 200
 

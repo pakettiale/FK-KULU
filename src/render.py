@@ -5,7 +5,7 @@ import time
 import texcaller
 import jinja2
 from werkzeug.utils import secure_filename
-from subprocess import check_call, STDOUT
+from subprocess import call, STDOUT
 
 latex_jinja2_env = jinja2.Environment(
     block_start_string = '\BLOCK{',
@@ -45,5 +45,7 @@ def latexify(nimi, iban, peruste, tositteet):
 
     # Kutsutaan kahdesti, jotta saadaan kuvat ja refit oikein
     dev = open(os.devnull, 'w')
-    check_call(['pdflatex', '-output-directory', folder, texf], stdout=dev, stderr=STDOUT)
-    check_call(['pdflatex', '-output-directory', folder, texf], stdout=dev, stderr=STDOUT)
+    ret = call(['pdflatex', '-output-directory', folder, texf], stdout=dev, stderr=STDOUT)
+    ret |= call(['pdflatex', '-output-directory', folder, texf], stdout=dev, stderr=STDOUT)
+
+    return not ret
