@@ -1,6 +1,8 @@
 from flask import Flask, render_template, request
 import validators
 
+from render import latexify
+
 app = Flask(__name__)
 app.config.from_object('dev_config')
 
@@ -49,6 +51,8 @@ def receive():
                 'liite': request.files[liite],
                 'summa': request.form[summa]
             })
+
+    latexify(**bill)
 
     return 'Success', 200
 

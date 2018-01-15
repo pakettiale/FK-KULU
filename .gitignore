@@ -4,3 +4,5 @@ bin
 
 pip-selfcheck.json
 src/__pycache__
+
+tmp
