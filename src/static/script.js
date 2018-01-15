@@ -79,6 +79,8 @@ function AddTositeField() {
         setValidation("#summa" + id, s.length != 0 && parseFloat(s))
     })
     $("#kuvaus" + id).on('input', validateNotEmpty("#kuvaus" + id))
+
+    $("#submit").prop('disabled', true)
 }
 
 function submit() {
