@@ -20,12 +20,17 @@ function setValidation(sel, isValid) {
         $(sel).removeClass('is-valid')
     }
 
-    var isValid = true
+    if(!isValid) {
+        $('#submit').prop('disabled', true)
+        return
+    }
+
+    var isV = true
     $('#form').find('.validate').each(function() {
-        isValid &= $(this).hasClass('is-valid')
+        isV &= $(this).hasClass('is-valid')
     })
 
-    $('#submit').prop('disabled', !isValid)
+    $('#submit').prop('disabled', !isV)
 }
 
 function validateIBAN() {
@@ -41,7 +46,7 @@ function validateNotEmpty(sel) {
 }
 
 function AddTositeField() {
-    var id = Math.floor((1+Math.random()) * 1e6)
+    var id = Math.floor(Math.random() * 1e6)
     var elem = $(erittelySkeleton
         .replace(/{tosite}/g, id)
         .replace(/{kuvaus}/g, "kuvaus" + id)

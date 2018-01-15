@@ -16,17 +16,17 @@ def receive():
     errors = []
     bill = {}
 
-    if len(request.form.get('nimi', '\0') == 0:
+    if len(request.form.get('nimi', '\0')) == 0:
         errors.append('Nimi on pakollinen kenttä.')
 
     # Kuinka hyvin vastaa client-side validiointia?
     if not validators.iban(request.form.get('iban', '\0').replace(" ", "")):
         errors.append('IBAN ei ole validi.')
 
-    if len(request.form.get('peruste') == 0:
+    if len(request.form.get('peruste', '\0')) == 0:
         errors.append('Maksun peruste tulee antaa.')
 
-    if len(request.form.get('ids') == 0:
+    if len(request.form.get('ids', '\0')) == 0:
         errors.append('Tositteita ei löytynyt.')
 
     if len(errors) > 0:
