@@ -16,6 +16,8 @@ def receive():
     errors = []
     bill = {}
 
+    print('Helloo')
+
     if len(request.form.get('nimi', '\0')) == 0:
         errors.append('Nimi on pakollinen kenttä.')
 
@@ -44,7 +46,7 @@ def receive():
         summa = "summa" + id
 
         if (not kuvaus in request.form) or (not summa in request.form) or (not liite in request.files):
-            return ['Liiteistä puuttuu tietoja.'], 405
+            return 'Liiteistä puuttuu tietoja.', 405
 
         bill['tositteet'].append({
                 'kuvaus': request.form[kuvaus],
@@ -54,8 +56,10 @@ def receive():
 
     ret = latexify(**bill)
 
+    print(ret)
+
     if not ret:
-        return ['Kääntäminen epäonnistui.'], 405
+        return 'Kääntäminen epäonnistui.', 405
 
     return 'Success', 200
 

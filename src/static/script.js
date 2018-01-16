@@ -11,6 +11,15 @@ var erittelySkeleton = `
         </div>
     </div>`
 
+function checkValidations() {
+    var isV = true
+    $('#form').find('.validate').each(function() {
+        isV &= $(this).hasClass('is-valid')
+    })
+
+    $('#submit').prop('disabled', !isV)
+}
+
 function setValidation(sel, isValid) {
     if(isValid) {
         $(sel).addClass('is-valid')
@@ -25,12 +34,7 @@ function setValidation(sel, isValid) {
         return
     }
 
-    var isV = true
-    $('#form').find('.validate').each(function() {
-        isV &= $(this).hasClass('is-valid')
-    })
-
-    $('#submit').prop('disabled', !isV)
+    checkValidations()
 }
 
 function validateIBAN() {
@@ -75,6 +79,7 @@ function AddTositeField() {
 
     $("#poista" + id).click(function() {
         $("#" + id).remove()
+        checkValidations()
     })
 
     // Validations
@@ -101,7 +106,7 @@ function submit() {
         data: formData,
         processData: false,
         contentType: false,
-        success: function(ret) {
+        complete: function(ret) {
             alert(ret); //TODO
         }
     })
