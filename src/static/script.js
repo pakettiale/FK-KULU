@@ -107,7 +107,8 @@ function submit() {
         processData: false,
         contentType: false,
         complete: function(ret) {
-            alert(ret); //TODO
+            alert(ret.responseText); //TODO
+            console.log(ret);
         }
     })
 }

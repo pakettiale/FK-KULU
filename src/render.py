@@ -21,31 +21,52 @@ latex_jinja2_env = jinja2.Environment(
 	loader = jinja2.FileSystemLoader(os.path.abspath('./src/templates'))
 )
 
+def escape(s):
+    map = {
+        '$':  "\\$",
+        '%':  "\\%",
+        '&':  "\\&",
+        '#':  "\\#",
+        '_':  "\\_",
+        '{':  "\\{",
+        '}':  "\\}",
+        '[':  "{[}",
+        ']':  "{]}",
+        '"':  "{''}",
+        '\\': "\\textbackslash{}",
+        '~':  "\\textasciitilde{}",
+        '<':  "\\textless{}",
+        '>':  "\\textgreater{}",
+        '^':  "\\textasciicircum{}",
+        '`':  "{}`",
+        '\n': "\\\\" # xkcd.com/1638/
+    }
+    res = ""
+    for c in s:
+        res += map.get(c, c)
+    return res
+
+
 def latexify(nimi, iban, peruste, tositteet):
-    base = secure_filename('{}-{}'.format(datetime.fromtimestamp(time.time()).strftime("%Y%m%d-%H%M%S"), texcaller.escape_latex(nimi)))
+    base = secure_filename('{}-{}'.format(datetime.fromtimestamp(time.time()).strftime("%Y%m%d-%H%M%S"), escape(nimi)))
     folder = 'tmp/' + base + '/'
     os.mkdir(folder)
-
-    print(os.getcwd())
 
     for tosite in tositteet:
         fn = folder + secure_filename(tosite['liite'].filename)
         tosite['liite'].save(fn)
         tosite['liite'] = fn
-        print(fn)
 
-    tositteet = [dict([(k, texcaller.escape_latex(v)) for (k,v) in t.items()]) for t in tositteet]
+    tositteet = [dict([(k, escape(v)) for (k,v) in t.items()]) for t in tositteet]
 
     template = latex_jinja2_env.get_template('template.tex')
     formatted = template.render(
-        nimi=texcaller.escape_latex(nimi),
-        iban=texcaller.escape_latex(iban),
-        peruste=texcaller.escape_latex(peruste),
+        nimi=escape(nimi),
+        iban=escape(iban),
+        peruste=escape(peruste),
         tositteet=tositteet,
         yhteensa=sum(int(tosite['summa']) for tosite in tositteet)
     )
-
-    print(formatted)
 
     texf = folder + base + '.tex'
     with open(texf, 'w') as f:
@@ -53,11 +74,11 @@ def latexify(nimi, iban, peruste, tositteet):
 
     # Kutsutaan kahdesti, jotta saadaan kuvat ja refit oikein
     dev = open(os.devnull, 'w')
-    ret = call(['pdflatex', '-halt-on-error','-output-directory', folder, texf]) #, stdout=dev, stderr=STDOUT)
+    ret = call(['pdflatex', '-halt-on-error','-output-directory', folder, texf], stdout=dev, stderr=STDOUT)
     ret |= call(['pdflatex', '-halt-on-error', '-output-directory', folder, texf], stdout=dev, stderr=STDOUT)
 
     if not ret:
         shutil.copy(folder + base + '.pdf', 'src/static/bills/')
-    #shutil.rmtree(folder)
+    shutil.rmtree(folder)
 
     return not ret

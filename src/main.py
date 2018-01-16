@@ -60,7 +60,7 @@ def receive():
     if not ret:
         return 'Kääntäminen epäonnistui.', 400
 
-    return 'Success', 200
+    return 'Lähettäminen onnistui.', 200
 
 @app.route('/view', methods=['GET'])
 def view():
