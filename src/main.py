@@ -1,5 +1,5 @@
 from flask import Flask, render_template, request
-import validators
+from schwifty import IBAN
 
 from render import latexify
 
@@ -21,8 +21,9 @@ def receive():
     if len(request.form.get('nimi', '\0')) == 0:
         errors.append('Nimi on pakollinen kenttä.')
 
-    # Kuinka hyvin vastaa client-side validiointia?
-    if not validators.iban(request.form.get('iban', '\0').replace(" ", "")):
+    try:
+        IBAN(request.form.get('iban', '\0'))
+    except ValueError:
         errors.append('IBAN ei ole validi.')
 
     if len(request.form.get('peruste', '\0')) == 0:
