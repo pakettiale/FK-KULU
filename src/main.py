@@ -33,7 +33,7 @@ def receive():
         errors.append('Tositteita ei löytynyt.')
 
     if len(errors) > 0:
-        return '\n'.join(errors), 405
+        return '\n'.join(errors), 400
 
     bill['nimi'] = request.form['nimi']
     bill['iban'] = request.form['iban']
@@ -47,7 +47,7 @@ def receive():
         summa = "summa" + id
 
         if (not kuvaus in request.form) or (not summa in request.form) or (not liite in request.files):
-            return 'Liiteistä puuttuu tietoja.', 405
+            return 'Liiteistä puuttuu tietoja.', 400
 
         bill['tositteet'].append({
                 'kuvaus': request.form[kuvaus],
@@ -57,12 +57,18 @@ def receive():
 
     ret = latexify(**bill)
 
-    print(ret)
-
     if not ret:
-        return 'Kääntäminen epäonnistui.', 405
+        return 'Kääntäminen epäonnistui.', 400
 
     return 'Success', 200
+
+@app.route('/view', methods=['GET'])
+def view():
+    auth = request.authorization
+    if not auth or auth.username != app.config['USER'] or auth.password != app.config['PASSWORD']:
+        return "Please login.", 401, {'WWW-Authenticate': 'Basic realm="Login Required"'}
+
+    return "Woow", 200
 
 if __name__ == '__main__':
     app.run()
