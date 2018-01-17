@@ -75,7 +75,8 @@ def receive():
 def view():
     bills = os.listdir('src/static/bills')
 
-    return "<br>".join(url_for('static', filename='bills/'+f) for f in bills), 200
+    return render_template('view.html')
+    #return "<br>".join("<a href=\"{url}\">{url}</a>".format(url=url_for('static', filename='bills/'+f)) for f in bills), 200
 
 @app.route('/static/bills/<fn>')
 @auth_required

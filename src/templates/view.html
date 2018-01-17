@@ -1,0 +1,29 @@
+{% extends "index.html" %}
+{% block content %}
+<div class="table-responsive">
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Lähettäjä</th>
+                <th>Päiväys</th>
+                <th>Maksettu</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for bill in bills %}
+            <tr>
+                <th>{{ bill.submitter }}</th>
+                <th>{{ bill.date }}</th>
+                <th>
+                    {% if bill.done %}
+                    <span style="font-size: 0.8cm;" class="fa fa-check-square-o"></span>
+                    {% endif %}
+                </th>
+                <th><a href="#" class="btn btn-primary" role="button">Lataa<span class="fa fa-file-pdf-o"></span></button></th>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}
