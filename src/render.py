@@ -77,8 +77,9 @@ def latexify(nimi, iban, peruste, tositteet):
     ret = call(['pdflatex', '-halt-on-error','-output-directory', folder, texf], stdout=dev, stderr=STDOUT)
     ret |= call(['pdflatex', '-halt-on-error', '-output-directory', folder, texf], stdout=dev, stderr=STDOUT)
 
+    pdff = folder + base + '.pdf'
     if not ret:
-        shutil.copy(folder + base + '.pdf', 'src/static/bills/')
+        shutil.copy(pdff, 'src/static/bills/')
     shutil.rmtree(folder)
 
-    return not ret
+    return pdff if ret else None

@@ -1,5 +1,9 @@
 {% extends "index.html" %}
 {% block content %}
+
+{% if bills|length == 0 %}
+    <h4>Ei kulukorvauslomakkeita näytettäväksi.</h4>
+{% else %}
 <div class="table-responsive">
     <table class="table">
         <thead>
@@ -26,4 +30,5 @@
         </tbody>
     </table>
 </div>
+{% endif %}
 {% endblock %}
