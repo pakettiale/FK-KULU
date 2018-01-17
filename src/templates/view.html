@@ -24,7 +24,11 @@
                     <span style="font-size: 0.8cm;" class="fa fa-check-square-o"></span>
                     {% endif %}
                 </th>
-                <th><a href="#" class="btn btn-primary" role="button">Lataa<span class="fa fa-file-pdf-o"></span></button></th>
+                <th>
+                    <a href="{{ url_for('static', filename=bill.filename) }}" class="btn btn-primary" role="button">
+                        Lataa<span class="fa fa-file-pdf-o"></span>
+                    </a>
+                </th>
             </tr>
             {% endfor %}
         </tbody>

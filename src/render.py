@@ -4,8 +4,10 @@ from datetime import datetime
 import time
 import texcaller
 import jinja2
+from uuid import uuid4
 from werkzeug.utils import secure_filename
 from subprocess import call, STDOUT
+
 
 latex_jinja2_env = jinja2.Environment(
     block_start_string = '\BLOCK{',
@@ -48,12 +50,14 @@ def escape(s):
 
 
 def latexify(nimi, iban, peruste, tositteet):
-    base = secure_filename('{}-{}'.format(datetime.fromtimestamp(time.time()).strftime("%Y%m%d-%H%M%S"), escape(nimi)))
+    base = str(uuid4())
     folder = 'tmp/' + base + '/'
     os.mkdir(folder)
+    print(os.path.isdir(folder))
 
     for tosite in tositteet:
         fn = folder + secure_filename(tosite['liite'].filename)
+        print(fn)
         tosite['liite'].save(fn)
         tosite['liite'] = fn
 
@@ -77,9 +81,8 @@ def latexify(nimi, iban, peruste, tositteet):
     ret = call(['pdflatex', '-halt-on-error','-output-directory', folder, texf], stdout=dev, stderr=STDOUT)
     ret |= call(['pdflatex', '-halt-on-error', '-output-directory', folder, texf], stdout=dev, stderr=STDOUT)
 
-    pdff = folder + base + '.pdf'
     if not ret:
-        shutil.copy(pdff, 'src/static/bills/')
-    shutil.rmtree(folder)
+        shutil.copy(folder + base + '.pdf', 'src/static/bills/')
+    #shutil.rmtree(folder)
 
-    return pdff if ret else None
+    return 'bills/' + base + '.pdf' if not ret else None
