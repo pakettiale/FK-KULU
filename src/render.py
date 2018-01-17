@@ -53,11 +53,9 @@ def latexify(nimi, iban, peruste, tositteet):
     base = str(uuid4())
     folder = 'tmp/' + base + '/'
     os.mkdir(folder)
-    print(os.path.isdir(folder))
 
     for tosite in tositteet:
         fn = folder + secure_filename(tosite['liite'].filename)
-        print(fn)
         tosite['liite'].save(fn)
         tosite['liite'] = fn
 
@@ -82,7 +80,7 @@ def latexify(nimi, iban, peruste, tositteet):
     ret |= call(['pdflatex', '-halt-on-error', '-output-directory', folder, texf], stdout=dev, stderr=STDOUT)
 
     if not ret:
-        shutil.copy(folder + base + '.pdf', 'src/static/bills/')
-    #shutil.rmtree(folder)
+        shutil.copy(folder + base + '.pdf', 'bills/')
+    shutil.rmtree(folder)
 
-    return 'bills/' + base + '.pdf' if not ret else None
+    return base + '.pdf' if not ret else None
