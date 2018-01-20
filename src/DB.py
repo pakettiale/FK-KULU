@@ -27,3 +27,8 @@ class Bill(db.Model):
     def pretty_name(fn):
         bill = Bill.query.filter_by(filename=fn).first()
         return "{}-{}.pdf".format(bill.submitter.replace(" ", "_"), bill.date)
+
+class Users(db.Model):
+    username      = db.Column(db.String(100), primary_key=True)
+    email         = db.Column(db.String(100), nullable=False)
+    password_hash = db.Column(db.String(100), nullable=False)

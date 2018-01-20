@@ -3,15 +3,26 @@ from schwifty import IBAN
 import os
 from functools import wraps
 
+from security import pwd_context
 from render import latexify
 from app import app
 import DB
+
+def check_access(username, password):
+    if not app.config['SECURE_PASSWORDS']:
+        return username == app.config['USER'] and password == app.config['PASSWORD']
+    else:
+        try:
+            user = DB.Users.query.filter_by(username=username).first()
+            return pwd_context.verify(password, user.password_hash)
+        except AttributeError:
+            return False
 
 def auth_required(f):
     @wraps(f)
     def wrapped(*args, **kwargs):
         auth = request.authorization
-        if not auth or auth.username != app.config['USER'] or auth.password != app.config['PASSWORD']:
+        if not auth or not check_access(auth.username, auth.password):
             return "Kirjaudu sisään.", 401, {'WWW-Authenticate': 'Basic realm="Sisäänkirjautuminen vaaditaan."'}
         return f(*args, **kwargs)
     return wrapped
