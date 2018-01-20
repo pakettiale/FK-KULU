@@ -9,7 +9,7 @@ Asennusohjeet:
 
 3. Siirry virtualenv:iin `. bin/activate`.
 
-4. Lisää tietokanta, `cd src && python` ja 
+4. Luo tietokanta seuraavasti: `cd src && python` ja 
 ```python
 >>> from DB import db
 >>> db.create_all()
