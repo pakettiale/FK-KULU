@@ -110,9 +110,10 @@ def users():
 @admin_required
 def add_user():
     tmp_pass = request.form['password']
+    print(request.form)
     #tmp_pass = "".join(random.choice(string.ascii_letters) for _ in range(10))
     tmp_pass_hash = pwd_context.hash(tmp_pass)
-    new_user = DB.Users(username=request.form['username'], email=request.form['email'], password_hash=tmp_pass_hash, admin=('on'==request.form['admin']))
+    new_user = DB.Users(username=request.form['username'], email=request.form['email'], password_hash=tmp_pass_hash, admin=('on'==request.form.get('admin', 'off')))
     DB.db.session.add(new_user)
     DB.db.session.commit()
     return 'Uusi käyttäjä lisätty.', 200
