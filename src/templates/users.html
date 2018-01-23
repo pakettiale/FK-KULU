@@ -1,0 +1,92 @@
+{% extends "index.html" %}
+{% block content %}
+
+<div class="table-responsive">
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Käyttäjä</th>
+                <th>Sähköposti</th>
+                <th>Poista</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for user in users %}
+            <tr>
+                <th>{{ user.username }}</th>
+                <th>{{ user.email }}</th>
+                <th><button class="delete-user" name="{{ user.username }}">Delete</button>
+                </th>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    <form id="user-form" class="form-horizontal">
+        <div class="form-group row">
+            <label for="username" class="control-label col-sm-3">Nimi</label>
+            <div class="col-sm-9">
+                <input class="form-control" id="username" name="username" type="text" />
+            </div>
+        </div>
+        <div class="form-group row">
+            <label for="email" class="control-label col-sm-3">Sähköposti</label>
+            <div class="col-sm-9">
+                <input class="form-control" id="email" name="email" type="text" />
+            </div>
+        </div>
+        <div class="form-group row">
+            <label for="password" class="control-label col-sm-3">Salasana</label>
+            <div class="col-sm-9">
+                <input class="form-control" id="password" name="password" type="text" />
+            </div>
+        </div>
+        <div class="form-group row">
+            <label for="admin" class="control-label col-sm-3">Admin</label>
+            <div class="col-sm-3">
+                <input class="form-control" id="admin" name="admin" type="checkbox" />
+            </div>
+            <div class="col-sm-3">
+                <button class="btn btn-primary" type="button" id="add-user">Lisää</button>
+            </div>
+        </div>
+    </form>
+    <script>
+     function addUser() {
+         var userData = new FormData($("#user-form")[0])
+
+         $.ajax({
+             type: 'POST',
+             url: '/users/add',
+             data: userData,
+             processData: false,
+             contentType: false,
+             complete: function(ret) {
+                 alert(ret.responseText);
+                 console.log(ret);
+             }
+         })
+     }
+
+     function deleteUser() {
+         userToDelete = this.name
+
+         $.ajax({
+             type: 'POST',
+             url: '/users/delete',
+             data: userToDelete,
+             processType: false,
+             contentType: false,
+             complete: function(ret) {
+                 alert(ret.responceText)
+                 console.log(ret)
+             }
+     }
+
+     $(document).ready(function() {
+         $("#add-user").click(addUser)
+         $(".delete-user").click(deleteUser)
+     })
+    </script>
+</div>
+
+{% endblock %}
