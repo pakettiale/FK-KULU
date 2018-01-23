@@ -32,3 +32,4 @@ class Users(db.Model):
     username      = db.Column(db.String(100), primary_key=True)
     email         = db.Column(db.String(100), nullable=False)
     password_hash = db.Column(db.String(100), nullable=False)
+    admin         = db.Column(db.Boolean, nullable=False)

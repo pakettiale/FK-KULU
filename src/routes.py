@@ -1,12 +1,17 @@
 from flask import render_template, request, url_for, redirect, make_response, send_from_directory
 from schwifty import IBAN
 import os
+import random
+import string
 from functools import wraps
 
 from security import pwd_context
 from render import latexify
 from app import app
 import DB
+
+def is_admin(username):
+    return DB.Users.query.filter_by(username=username).first().admin
 
 def check_access(username, password):
     if not app.config['SECURE_PASSWORDS']:
@@ -23,6 +28,15 @@ def auth_required(f):
     def wrapped(*args, **kwargs):
         auth = request.authorization
         if not auth or not check_access(auth.username, auth.password):
+            return "Kirjaudu sisään.", 401, {'WWW-Authenticate': 'Basic realm="Sisäänkirjautuminen vaaditaan."'}
+        return f(*args, **kwargs)
+    return wrapped
+
+def admin_required(f):
+    @wraps(f)
+    def wrapped(*args, **kwargs):
+        auth = request.authorization
+        if not auth or not check_access(auth.username, auth.password) or not is_admin(auth.username):
             return "Kirjaudu sisään.", 401, {'WWW-Authenticate': 'Basic realm="Sisäänkirjautuminen vaaditaan."'}
         return f(*args, **kwargs)
     return wrapped
@@ -86,6 +100,30 @@ def receive():
 @auth_required
 def view():
     return render_template('view.html', bills=DB.Bill.all())
+
+@app.route('/users', methods=['GET'])
+@admin_required
+def users():
+    return render_template('users.html', users=DB.Users.query.all())
+
+@app.route('/users/add', methods=['POST'])
+@admin_required
+def add_user():
+    tmp_pass = request.form['password']
+    #tmp_pass = "".join(random.choice(string.ascii_letters) for _ in range(10))
+    tmp_pass_hash = pwd_context.hash(tmp_pass)
+    new_user = DB.Users(username=request.form['username'], email=request.form['email'], password_hash=tmp_pass_hash, admin=('on'==request.form['admin']))
+    DB.db.session.add(new_user)
+    DB.db.session.commit()
+    return 'Uusi käyttäjä lisätty.', 200
+
+@app.route('/users/delete', methods=['POST'])
+@admin_required
+def delete_user():
+    username = request.data['username']
+    DB.db.session.delete(DB.Users.query.filter_by(username=username).first())
+    DB.db.session.commit()
+    return 'Käyttäjä ' + username + ' poistettu.', 200
 
 @app.route('/bills/<filename>', methods=['GET'])
 @auth_required
