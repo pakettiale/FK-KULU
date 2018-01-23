@@ -3,6 +3,8 @@ DEBUG = True
 
 EMAIL = "\0"
 
+SECURE_PASSWORDS = True
+
 USER = "rahis"
 PASSWORD = "pw"
 
